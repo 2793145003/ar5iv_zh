@@ -24,7 +24,10 @@ def replace_tags(html):
         html = BeautifulSoup(html, 'html.parser')
         con = False
         for tag in html.find_all(True):
-            if (tag.string and '【占' not in tag.string) or tag.name == 'math':
+            if (
+                (tag.string and '【占' not in tag.string) or tag.name == 'math'
+                or tag.name == 'span' and 'footnote' in tag['id']
+            ):
                 replaced_text.append(str(tag))
                 tag.replace_with(f'【占{len(replaced_text)-1}】')
                 con = True
@@ -78,13 +81,15 @@ def translate_html(input_path, output_path):
 
     for paragraph in paragraphs:
         pure, tags = replace_tags(paragraph)
-        pure = (BeautifulSoup(pure, 'html.parser'))
+        pure = BeautifulSoup(pure, 'html.parser')
         original_text = pure.get_text()
         text = translate_text(original_text)
         pure.string = text
         tags = trans_tags(tags)
         pure = add_tags(pure, tags)
-        paragraph.insert_after(BeautifulSoup(pure, 'html.parser'))
+        attrs = paragraph.attrs
+        result = f'<p {" ".join([f"{k}={v}" for k, v in attrs.items()])}>{pure}</p>'
+        paragraph.insert_after(BeautifulSoup(result, 'html.parser'))
 
     with open(output_path, 'w') as f:
         f.write(str(soup))
