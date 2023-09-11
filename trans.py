@@ -25,11 +25,11 @@ def replace_tags(html):
         con = False
         for tag in html.find_all(True):
             if (
-                (tag.string and '【占' not in tag.string) or tag.name == 'math'
+                (tag.string and '★' not in tag.string) or tag.name == 'math'
                 or tag.name == 'span' and 'footnote' in tag['id']
             ):
                 replaced_text.append(str(tag))
-                tag.replace_with(f'【占{len(replaced_text)-1}】')
+                tag.replace_with(f'★{len(replaced_text)-1}')
                 con = True
                 break
         if not con:
@@ -57,18 +57,11 @@ def trans_tags(tags):
         results.append(str(tag))
     return results
 
-def remove_spaces_between_brackets(text):
-    # 移除'【'与'】'之间的所有空格
-    pattern = r'【\s*([^【】]+)\s*】'
-    repl = lambda match: '【' + match.group(1).replace(' ', '') + '】'
-    result = re.sub(pattern, repl, text)
-    return result
-
 def add_tags(paragraph, tags):
     paragraph = str(paragraph)
-    paragraph = remove_spaces_between_brackets(paragraph)
-    for i in range(len(tags)):
-        paragraph = paragraph.replace(f'【占{i}】', tags[i])
+    for j in range(len(tags)):
+        i = len(tags) - j - 1
+        paragraph = paragraph.replace(f'★{i}', tags[i])
     return paragraph
 
 def translate_html(input_path, output_path):
