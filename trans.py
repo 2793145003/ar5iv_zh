@@ -36,6 +36,7 @@ def replace_tags(html):
             break
     
     replaced_html = str(html)
+    replaced_html = replaced_html.replace('LLM', '☆')
     return replaced_html, replaced_text
 
 def trans_tags(tags):
@@ -62,6 +63,7 @@ def add_tags(paragraph, tags):
     for j in range(len(tags)):
         i = len(tags) - j - 1
         paragraph = paragraph.replace(f'★{i}', tags[i])
+    paragraph = paragraph.replace('☆', 'LLM')
     return paragraph
 
 def translate_html(input_path, output_path):
