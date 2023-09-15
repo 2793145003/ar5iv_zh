@@ -60,6 +60,8 @@ def trans_tags(tags):
 
 def add_tags(paragraph, tags):
     paragraph = str(paragraph)
+    while '★ ' in paragraph:
+        paragraph = paragraph.replace('★ ', '★')
     for j in range(len(tags)):
         i = len(tags) - j - 1
         paragraph = paragraph.replace(f'★{i}', tags[i])
